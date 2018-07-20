@@ -33,144 +33,42 @@ Data Stack size         : 256
 //#include <avr/eeprom.h>
 
 // Declare your global variables here
-int max = 0, min = 0 , s = 0 , n = 0 , flag = 0 , flag2 = 0 , temprature , mp ;
-char m1[20] , m2[20] , m3[20] ;
-int maxfromEE = 0 , minfromEE = 0;  
+int  n = 0 , flag = 0 , flag2 = 0 ,flag3 = 2, flag5 = 0 , flag4 = 0, temprature , mp ,hu , h;
+float humadity = 0 ;
+unsigned int max = 0 , min = 0 , hmax = 0 , hmin = 0 ,maxee = 0 , minee = 0 , hmaxee = 0 , hminee = 0; 
+int chap = 0 ;
+char m1[20] , m2[20] ,m3[20] , m4[20] , m5[20] , m6[20] , m7[20];
+ 
 
 //eeprom int alfa = 1;
 
 // External Interrupt 0 service routine
 interrupt [EXT_INT0] void ext_int0_isr(void)
 {
-// Place your code here
+// Place your code here\
 
-      s = 100 ;
-      delay_ms(10);
-   //  PORTC.4 = 1 ;
-  //   PORTC.5 = 1 ;
-    //  PORTC.6 = 1 ;
-   //  PORTC.7 = 1 ;
+        
       
-      // Place your code here    
-     // PORTC.4 = 0 ;   
-       
-      if (PINC.0 == 0) { 
-        
-        PORTC = 0b00011111 ;
-        if ( PINC == 0b00011111 ) {
-        n = 1 ;
-        if (flag == 0 )   
-            max = max * 10 + 1 ;
-        else    
-            min = min * 10 + 1 ;
-        } 
-        PORTC = 0b00001111 ;
-        PORTC = 0b00101111 ;
-        if ( PINC == 0b00101111 ) {
-        n = 6 ;
-        if (flag == 0 )   
-            max = max * 10 + 6 ;
-        else    
-            min = min * 10 + 6 ;
-        
-        }  
-        PORTC = 0b00001111 ;  
-        PORTC = 0b01001111 ;
-        if ( PINC == 0b01001111 ) {
-        n = 7 ;
-         if (flag == 0 )   
-            max = max * 10 + 7 ;
-        else    
-            min = min * 10 + 7 ;
-        
-        }  
-        
-        PORTC = 0b00001111 ;
-        PORTC = 0b10001111 ;
-        if ( PINC == 0b10001111 ) {
-        flag = 1   ;
-        
-        //max = max * 10 + 7 ;
-        //min = min * 10 + 7 ;
-        
-        }  
-        
-        PORTC = 0b00001111 ;
-        } 
-        
-        if (PINC.1 == 0) { 
-        
-        PORTC = 0b00011111 ;
-        if ( PINC == 0b00011111 ) {
-        n = 2 ;           
-         if (flag == 0 )   
-            max = max * 10 + 2 ;
-        else    
-            min = min * 10 + 2 ;
-        } 
-        PORTC = 0b00001111 ;
-        PORTC = 0b00101111 ;
-        if ( PINC == 0b00101111 ) {
-        n = 5 ;           
-         if (flag == 0 )   
-            max = max * 10 + 5 ;
-        else    
-            min = min * 10 + 5 ;
-        }  
-        PORTC = 0b00001111 ;  
-        PORTC = 0b01001111 ;
-        if ( PINC == 0b01001111 ) {
-        n = 8 ;           
-       if (flag == 0 )   
-            max = max * 10 + 8 ;
-        else    
-            min = min * 10 + 8 ;
-        
-        }  
-        
-        PORTC = 0b00001111 ;
+
+
+     // key_interrupt = 1 ;
+
+      if(PORTA.2 == 0){ 
+        PORTA.2 = 1 ;
+       // flagg = 1 ;
+        }             
+
+      else if(PORTA.2 == 1){ 
+        PORTA.2 = 0 ;
+        //flagg = 0 ;
         }
-         
-        if (PINC.2 == 0) { 
+
+     
         
-        PORTC = 0b00011111 ;
-        if ( PINC == 0b00011111 ) {
-        n = 3 ;           
-         if (flag == 0 )   
-            max = max * 10 + 3 ;
-        else    
-            min = min * 10 + 3 ;
+        //PORTC = 0b00001111 ;
         
-        } 
-        PORTC = 0b00001111 ;
-        PORTC = 0b00101111 ;
-        if ( PINC == 0b00101111 ) {
-        n = 4 ;           
-         if (flag == 0 )   
-            max = max * 10 + 4 ;
-        else    
-            min = min * 10 + 4 ;
-        
-        }  
-        PORTC = 0b00001111 ;  
-        PORTC = 0b01001111 ;
-        if ( PINC == 0b01001111 ) {
-        n = 9 ;           
-        if (flag == 0 )   
-            max = max * 10 + 9 ;
-        else    
-            min = min * 10 + 9 ;
-        
-        }  
-        
-        PORTC = 0b00001111 ;
-        PORTC = 0b10001111 ;
-        if ( PINC == 0b10001111 ) {
-        flag2 = 1   ;
-        }
-        
-        PORTC = 0b00001111 ;
-        }
+     
+           
 }
 
 
@@ -218,7 +116,7 @@ PORTC=(0<<PORTC7) | (0<<PORTC6) | (0<<PORTC5) | (0<<PORTC4) | (1<<PORTC3) | (1<<
 
 // Port D initialization
 // Function: Bit7=Out Bit6=Out Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In 
-DDRD=(1<<DDD7) | (1<<DDD6) | (0<<DDD5) | (0<<DDD4) | (0<<DDD3) | (0<<DDD2) | (0<<DDD1) | (0<<DDD0);
+DDRD=(1<<DDD7) | (1<<DDD6) | (1<<DDD5) | (1<<DDD4) | (0<<DDD3) | (0<<DDD2) | (0<<DDD1) | (0<<DDD0);
 // State: Bit7=0 Bit6=0 Bit5=T Bit4=T Bit3=T Bit2=T Bit1=T Bit0=T 
 PORTD=(0<<PORTD7) | (0<<PORTD6) | (0<<PORTD5) | (0<<PORTD4) | (0<<PORTD3) | (1<<PORTD2) | (0<<PORTD1) | (0<<PORTD0);
 
@@ -273,6 +171,11 @@ TIMSK=(0<<OCIE2) | (0<<TOIE2) | (0<<TICIE1) | (0<<OCIE1A) | (0<<OCIE1B) | (0<<TO
 // INT1: Off
 // INT2: Off
 GICR|=(0<<INT1) | (1<<INT0) | (0<<INT2);
+
+//GICR&= ~ (1<<INT0);
+//GICR|=(1<<INT0);
+
+
 MCUCR=(0<<ISC11) | (0<<ISC10) | (1<<ISC01) | (0<<ISC00);
 MCUCSR=(0<<ISC2);
 GIFR=(0<<INTF1) | (1<<INTF0) | (0<<INTF2);
@@ -296,6 +199,8 @@ ACSR=(1<<ACD) | (0<<ACBG) | (0<<ACO) | (0<<ACI) | (0<<ACIE) | (0<<ACIC) | (0<<AC
 ADMUX=ADC_VREF_TYPE;
 ADCSRA=(1<<ADEN) | (0<<ADSC) | (1<<ADATE) | (0<<ADIF) | (0<<ADIE) | (1<<ADPS2) | (1<<ADPS1) | (0<<ADPS0);
 SFIOR=(0<<ADTS2) | (0<<ADTS1) | (0<<ADTS0);
+
+
 
 // SPI initialization
 // SPI disabled
@@ -325,57 +230,255 @@ while (1)
       {
       // Place your code here
       
-      mp = read_adc(0);
-     
-      if (flag == 1) 
-        eeprom_update_dword(2,max);
-      if (flag2 == 1)
-        eeprom_update_dword(6,min);
+       mp = read_adc(0);
+      // h = read_adc(7) ;
+            
+        
       
+      temprature = mp / 2 ; 
       
-      max = eeprom_read_dword(2) ;
-      min = eeprom_read_dword(6) ;
-      
-      sprintf(m1,"%d",max);   
-      sprintf(m2,"%d",min);
-      lcd_gotoxy(0,0);       
-      lcd_puts(m1);
-      lcd_gotoxy(0,1);
-      lcd_puts(m2);
-      
-      temprature = mp / 2 ;
-     // lcd_gotoxy(0,1);
-     // sprintf(m3,"%d",temprature)   ;        
+     // humadity = ((h/205 - 0.6)/0.03) + 20 ;  
+     // hu = (int) humadity ;
+    //  lcd_gotoxy(0,0);
+     // sprintf(m3,"%d",hu)   ;        
      // lcd_puts(m3);
+     // lcd_gotoxy(0,0);
+    //  sprintf(m5,"%d",h)   ;        
+    //  lcd_puts(m5);
       
-      // if (temprature > max && flag == 1) {
-      
-      if (temprature > max ) {
+      sprintf(m5,"%d",temprature)   ;        
+      lcd_gotoxy(0,0);
+      lcd_puts(m5);
+ 
+      if (temprature > maxee ) {
         PORTD.6 = 1 ;
         PORTD.7 = 0;
       }
       
-      if (temprature < min  ) {
+      if (temprature < minee  ) {
         PORTD.6 = 0 ;
         PORTD.7 = 1 ;
       }
       
-      if( temprature > min && temprature < max) {
+      if( temprature > minee && temprature < maxee) {
       PORTD.6 = 0 ;
       PORTD.7 = 0;
       }             
       
-       
-      //PORTD.6 = 0 ;
-      //PORTD.7 = 0;
-                      
-      //sprintf(m1,"%d",max);   
-      //sprintf(m2,"%d",min);
-      //lcd_gotoxy(0,0);       
-      //lcd_puts(m1);
-      //lcd_gotoxy(0,1);
-      //lcd_puts(m2);
-    
-    
+      if (h > maxee ) {
+        PORTD.4 = 1 ;
+        PORTD.5 = 0;
       }
+      
+      if (h < minee  ) {
+        PORTD.4 = 0 ;
+        PORTD.5 = 1 ;
+      }
+      
+      if( h > minee && h < maxee) {
+      PORTD.4 = 0 ;
+      PORTD.5 = 0;
+      }             
+
+    
+        PORTC = 0b11101111;
+        if (PINC.0 == 0) {
+        n = 3 ;
+        if (flag == 0 )   
+            max = max * 10 + 3 ;
+        else  
+            min = min * 10 + 3 ;   
+            
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 3 ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10 + 3 ;           
+        }
+            
+        else if (PINC.1 == 0) {
+        n = 4 ;
+        if (flag == 0 )   
+            max = max * 10 + 4 ;
+        else    
+            min = min * 10 + 4 ;  
+        
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 4 ;
+//        else if (flag3 == 1 )  
+//            hmin = hmin * 10 + 4 ;                
+        }
+            
+        else if (PINC.2 == 0) {
+        n = 7 ;
+        if (flag == 0 )   
+            max = max * 10 + 7 ;
+        else  
+            min = min * 10 + 7 ; 
+            
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 7 ;
+//        else if (flag3 == 1 )  
+//            hmin = hmin * 10 + 7 ;             
+        }
+            
+        else if (PINC.3 == 0) { 
+            //chap = 1 ;
+            //n = 11 ;
+            flag = 1   ; 
+           // flag3 = 1 ;
+            
+        }
+            
+        PORTC = 0b11011111;
+            
+        if (PINC.0 == 0) {
+        n = 1 ;
+        if (flag == 0 )   
+            max = max * 10 + 1 ;
+        
+        else   
+            min = min * 10 + 1 ;  
+            
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 1 ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10 + 1 ;                
+        }
+            
+        else if (PINC.1 == 0) {
+        n = 5 ;
+        if (flag == 0 )   
+            max = max * 10 + 5 ;
+        else     
+            min = min * 10 + 5 ;
+        
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 5 ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10 + 5 ;                  
+        
+        }
+            
+        else if (PINC.2 == 0) {
+        n = 8 ;
+        if (flag == 0 )   
+            max = max * 10 + 8 ;
+        else    
+            min = min * 10 + 8 ;
+            
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 8 ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10 + 8 ;                  
+        }
+            
+        else if (PINC.3 == 0) {
+        n = 0 ;
+        if (flag == 0 )   
+            max = max * 10 ;
+        else    
+            min = min * 10  ;
+        
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10  ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10  ;                  
+        } 
+                   
+        PORTC = 0b10111111;
+        if (PINC.0 == 0) {
+        n = 2 ;
+        if (flag == 0 )   
+            max = max * 10 + 2 ;
+        else     
+            min = min * 10 + 2 ;
+//        
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 2 ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10 + 2 ;                  
+        }
+            
+        else if (PINC.1 == 0) {
+        n = 6 ;
+        if (flag == 0 )   
+            max = max * 10 + 6 ;
+        else     
+            min = min * 10 + 6 ;
+            
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 6 ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10 + 6 ;                  
+        }
+            
+        else if (PINC.2 == 0) {
+        n = 9 ;
+        if (flag == 0 )   
+            max = max * 10 + 9 ;
+        else   
+            min = min * 10 + 9 ;
+//        
+//        if (flag3 == 0 )   
+//            hmax = hmax * 10 + 9 ;
+//        else if (flag3 == 1 )    
+//            hmin = hmin * 10 + 9 ;                  
+        }
+            
+        else if (PINC.3 == 0) {
+      
+        chap = 1 ;
+        n = 10 ;
+        flag2 = 1   ; 
+      //  flag3 = 0 ;
+       // flag4 = 1 ;
+            
+        }
+        delay_ms(300) ;
+        PORTC = 0b00001111 ;
+           
+//     if(chap == 1 ) {
+//     sprintf(m1,"%d",max);   
+//     sprintf(m2,"%d",min);
+//     lcd_gotoxy(0,1);       
+//     lcd_puts(m1); 
+//     lcd_gotoxy(5,1);
+//     lcd_puts(m2); 
+//     sprintf(m6,"%d",hmax);   
+//     sprintf(m7,"%d",hmin);
+//     lcd_gotoxy(1,8);       
+//     lcd_puts(m6); 
+//     lcd_gotoxy(1,12);
+//     lcd_puts(m7); 
+       
+     chap = 0 ;  
+//     }
+     
+//     if (flag == 1 && flag2 == 1)   {
+//      max = eeprom_read_dword(2) ;
+//      min = eeprom_read_dword(6) ;
+//      flag = 0 ;
+//      flag2 =  0 ;
+//      } 
+
+     if (flag == 1) 
+        eeprom_update_dword(0,max);
+     if (flag2 == 1)
+        eeprom_update_dword(4,min);
+     
+      
+      maxee = eeprom_read_dword(0) ;
+      minee = eeprom_read_dword(4) ;
+       
+        
+     sprintf(m6,"%d",maxee);   
+     sprintf(m7,"%d",minee);
+     lcd_gotoxy(5,1);       
+     lcd_puts(m7); 
+     lcd_gotoxy(0,1);
+     lcd_puts(m6);    
+       
+ }
+      
+      
 }
